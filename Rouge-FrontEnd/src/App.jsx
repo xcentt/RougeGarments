@@ -66,6 +66,12 @@ function App() {
       name: 'Carta de prueba',
       price: '$0.00',
     },
+     {
+      id: 10,
+      image: placeholderImage,
+      name: 'Carta de prueba',
+      price: '$0.00',
+    }, 
   ] 
 
   useEffect(() => {
@@ -94,7 +100,7 @@ function App() {
           <div className="w-16" />  
 
           <div className="flex justify-center">
-            <img src={logo} alt="Logo" className="h-25 w-auto" />    
+            <img src={logo} alt="Logo" className="h-25 w-auto" />     
           </div>   
 
           <div className="flex items-center gap-4">
