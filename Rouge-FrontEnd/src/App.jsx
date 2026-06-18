@@ -10,69 +10,44 @@ import './App.css'
 function App() {
   const [showHeader, setShowHeader] = useState(true)
   const [lastScrollY, setLastScrollY] = useState(0)
+  const [products, setProducts] = useState([])
+  const [isLoading, setIsLoading] = useState(true)
+  const [fetchError, setFetchError] = useState(null)
 
-  const products = [
-    {
-      id: 1,
-      image: placeholderImage,
-      name: 'Carta de prueba',
-      price: '$0.00',
-    },
-    {
-      id: 2,
-      image: placeholderImage,
-      name: 'Carta de prueba',
-      price: '$0.00',
-    },
-    {
-      id: 3,
-      image: placeholderImage,
-      name: 'Carta de prueba',
-      price: '$0.00',
-    },
-      {
-      id: 4,
-      image: placeholderImage,
-      name: 'Carta de prueba',
-      price: '$0.00',
-    },
-    {
-      id: 5,
-      image: placeholderImage,
-      name: 'Carta de prueba',
-      price: '$0.00',
-    },
-    { 
-      id: 6,
-      image: placeholderImage,
-      name: 'Carta de prueba',
-      price: '$0.00',
-    },
-      {
-      id: 7,
-      image: placeholderImage,
-      name: 'Carta de prueba',
-      price: '$0.00',
-    },
-    {
-      id: 8,
-      image: placeholderImage,
-      name: 'Carta de prueba',
-      price: '$0.00',
-    },
-    {
-      id: 9,
-      image: placeholderImage,
-      name: 'Carta de prueba',
-      price: '$0.00',
-    },
-     {
-      id: 10,
-      image: placeholderImage,
-      name: 'Carta de prueba',
-      price: '$0.00',
-    }, 
-  ] 
+  useEffect(() => {
+    const fetchProducts = async () => {
+      try {
+        const response = await fetch('http://127.0.0.1:8000/api/Ropa')
+        if (!response.ok) {
+          throw new Error(`HTTP ${response.status}`)
+        }
+
+        const data = await response.json()
+        const items = Array.isArray(data) ? data : data.results || []
+
+        setProducts(
+          items.map((item, index) => ({
+            id: item.id ?? index,
+            image: item.imagen_url || item.image || placeholderImage,
+            name: item.name || item.nombre || 'Sin nombre',
+            price:
+              item.price || item.precio
+                ? typeof (item.price || item.precio) === 'number'
+                  ? `$${(item.price || item.precio).toFixed(2)}`
+                  : item.price || item.precio
+                : 'No disponible',
+          }))
+        )
+      } catch (error) {
+        console.error('Error fetching products:', error)
+        setFetchError('No se pudo cargar la lista de productos.')
+      } finally {
+        setIsLoading(false)
+      }
+    }
+
+    fetchProducts()
+  }, [])
 
   useEffect(() => {
     const handleScroll = () => {
